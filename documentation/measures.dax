@@ -1,0 +1,52 @@
+// =====================================================================
+// Customer Segmentation (Sales): model columns and measures
+// Table: Retail_sales (the model's name for the transaction table)
+// Check the names in Model view first; the existing measures are kept.
+//
+// STEP A (calculated columns, Table tools > New column on Retail_sales):
+//
+// Age Group = SWITCH ( TRUE (),
+//     Retail_sales[Age] <= 25, "18-25",
+//     Retail_sales[Age] <= 35, "26-35",
+//     Retail_sales[Age] <= 45, "36-45",
+//     Retail_sales[Age] <= 55, "46-55",
+//     "56-64" )
+//
+// Spend Tier = SWITCH ( TRUE (),
+//     Retail_sales[Total Amount] < 100, "1. Under 100",
+//     Retail_sales[Total Amount] < 500, "2. 100-499",
+//     Retail_sales[Total Amount] < 1000, "3. 500-999",
+//     "4. 1000+" )
+//
+// Sort Age Group by Age Group Order if needed (18-25 first), and Spend Tier by its own name
+// (the "1." to "4." prefixes sort correctly).
+// =====================================================================
+
+// STEP B (measures). Expected values on the full dataset in brackets.
+
+Total Sales =
+SUM ( Retail_sales[Total Amount] )                                  // [456,000]
+
+Total Transactions =
+DISTINCTCOUNT ( Retail_sales[Transaction ID] )                      // [1,000]
+
+Total Customers =
+DISTINCTCOUNT ( Retail_sales[Customer ID] )                         // [1,000]
+
+Avg Order Value =
+DIVIDE ( [Total Sales], [Total Transactions] )                      // [456.00]
+
+Total Quantity =
+SUM ( Retail_sales[Quantity] )                                      // [2,514]
+
+Avg Quantity per Transaction =
+DIVIDE ( [Total Quantity], [Total Transactions] )                   // [2.51]
+
+Share of Transactions % =
+DIVIDE ( [Total Transactions], CALCULATE ( [Total Transactions], REMOVEFILTERS ( Retail_sales[Spend Tier] ) ) ) * 100
+
+Share of Revenue % =
+DIVIDE ( [Total Sales], CALCULATE ( [Total Sales], REMOVEFILTERS ( Retail_sales[Spend Tier] ) ) ) * 100
+
+Top Tier Revenue Share % =
+DIVIDE ( CALCULATE ( [Total Sales], Retail_sales[Spend Tier] = "4. 1000+" ), [Total Sales] ) * 100   // [62.9]
