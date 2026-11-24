@@ -166,4 +166,4 @@ This is a portfolio project using secondary data. Results describe that dataset 
 
 ---
 
-**Author:** [Sarthak Jaykar](https://www.linkedin.com/in/sarthak-jaykar/)
+**Author:** [Sarthak Jaykar](https://www.linkedin.com/in/sarthak-jaykar/) · [GitHub](https://github.com/sarthak-jaykar)
